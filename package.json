@@ -1,7 +1,7 @@
 {
-  "name": "idea-api",
+  "name": "Idea School",
   "version": "0.0.1",
-  "description": "",
+  "description": "An idea sharing platform",
   "author": "Ayubur Rahaman",
   "license": "MIT",
   "scripts": {

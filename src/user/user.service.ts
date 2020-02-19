@@ -28,10 +28,14 @@ export class UserService {
 
     async register(data:UserRegisterDTO):Promise<UserRO>{
         
-        const {email} =data;
+        const {username,email} =data;
         let user= await this.userRespository.findOne({where:{email}});
         if(user){
             throw new HttpException("Email already taken, try another",HttpStatus.BAD_REQUEST);
+        }
+        user= await this.userRespository.findOne({where:{username}});
+        if(user){
+            throw new HttpException("Username already taken, try another",HttpStatus.BAD_REQUEST);
         } 
         user= await this.userRespository.create(data);
         await this.userRespository.save(user);

@@ -12,7 +12,7 @@ export class UserEntity{
     @CreateDateColumn()
     created: Date;
 
-    @Column('text')
+    @Column({ type:'text',unique:true })
     username: string;
 
     @Column({type:'text',unique:true})
