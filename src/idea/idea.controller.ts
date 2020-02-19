@@ -1,7 +1,8 @@
+import { IdeaDTO } from './idea.dto';
 import { IdeaService } from './idea.service';
 import { Controller, Get, Param, Post, Patch, Delete, Body } from '@nestjs/common';
 
-@Controller('ideas')
+@Controller('api/ideas')
 export class IdeaController {
 
     constructor(private ideaService :IdeaService){}
@@ -18,8 +19,8 @@ export class IdeaController {
     }
 
     @Post()
-    saveIdea(@Body('idea') idea:string,@Body('description') description:string){
-       return this.ideaService.saveIdea(idea,description);
+    saveIdea(@Body() data:IdeaDTO){
+       return this.ideaService.saveIdea(data);
     }
 
     @Patch(":id")

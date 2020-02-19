@@ -1,3 +1,4 @@
+import { IdeaDTO } from './idea.dto';
 import { IdeaEntity } from './idea.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,12 +18,8 @@ export class IdeaService {
         return await this.ideaRespository.findOne({where:{id}});
     }
 
-    async saveIdea(idea:string, description:string){
+    async saveIdea(data:IdeaDTO){
 
-        const data={
-            idea,
-            description
-        };
         const createdIdea = await this.ideaRespository.create(data);
         await this.ideaRespository.save(createdIdea);
 
