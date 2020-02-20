@@ -15,5 +15,5 @@ A place to see and post ideas in the style of reddit and twitter
 
 - Database         - PostgreSQL
 - REST API         - Nest Js
-- REST Frontend     - React with Redux
+- REST Frontend    - React with Redux
 - GraphQL Frontend - React with Apollo Client

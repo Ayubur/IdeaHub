@@ -10,7 +10,6 @@ export class UserController {
     constructor(private userService:UserService){}
 
     @Get('api/users')
-    @UseGuards(new AuthGuard())
     getAllUsers(@User() user){
         return this.userService.getAll();
     }
