@@ -1,6 +1,6 @@
 import { IdeaEntity } from './../idea/idea.entity';
 import { UserRO } from './user.dto';
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, BeforeInsert, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, BeforeInsert, OneToMany, ManyToMany, JoinColumn, JoinTable } from "typeorm";
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 
@@ -25,19 +25,26 @@ export class UserEntity{
     @OneToMany(type => IdeaEntity, idea => idea.author)
     ideas: IdeaEntity[];
 
+    @ManyToMany(type => IdeaEntity,{cascade:true})
+    @JoinTable()
+    bookmarks: IdeaEntity[]
+
     @BeforeInsert()
     async hashPassword(){
         this.password = await bcrypt.hash(this.password,10);
     }
 
     toResponseObject(showToken:boolean=true):UserRO{
-        const {id, username, email, created,token,ideas} = this;
+        const {id, username, email, created,token} = this;
         let responseObject:any ={id,username, email, created};
         if(showToken){
             responseObject.token =token;
         }
-        if(ideas){
-           responseObject.ideas=ideas;
+        if(this.ideas){
+           responseObject.ideas=this.ideas;
+        }
+        if(this.bookmarks){
+            responseObject.bookmarks= this.bookmarks;
         }
         return responseObject;
     }

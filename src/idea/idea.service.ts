@@ -82,4 +82,34 @@ export class IdeaService {
         await this.ideaRespository.delete({id});
         return {"deleted": true};
     }
+
+
+    async bookmark(id:string,userId:string){
+        const idea= await this.ideaRespository.findOne({where:{id}});
+        const user = await this.userRepository.findOne({where:{id:userId},relations:['bookmarks']});
+
+        if(user.bookmarks.filter(bookmark => bookmark.id === idea.id).length <1){
+            user.bookmarks.push(idea);
+            await this.userRepository.save(user);
+        }else{
+            throw new HttpException('Idea already bookmarked',HttpStatus.BAD_REQUEST);
+        }
+
+        return user.toResponseObject(false);
+    }
+
+    async unbookmark(id:string,userId:string){
+        const idea= await this.ideaRespository.findOne({where:{id}});
+        const user = await this.userRepository.findOne({where:{id:userId},relations:['bookmarks']});
+
+        if(user.bookmarks.filter(bookmark => bookmark.id === idea.id).length >0){
+            user.bookmarks=user.bookmarks.filter(bookmark => bookmark.id !== idea.id);
+            await this.userRepository.save(user);
+        }else{
+            throw new HttpException('No bookmark found to delete',HttpStatus.BAD_REQUEST);
+        }
+
+        return user.toResponseObject(false);
+        
+    }
 }

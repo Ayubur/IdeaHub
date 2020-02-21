@@ -1,3 +1,4 @@
+import { IdeaEntity } from './../idea/idea.entity';
 import { IdeaRO } from './../idea/idea.dto';
 export class UserLoginDTO{
     email:string;
@@ -18,4 +19,5 @@ export class UserRO{
     created:Date;
     token ?:string;
     ideas ?: IdeaRO;
+    bookmarks ?: IdeaEntity[];
 }

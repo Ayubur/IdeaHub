@@ -23,4 +23,6 @@ export class UserController {
     register(@Body() data:UserRegisterDTO){
         return this.userService.register(data);
     }
+
+
 }
