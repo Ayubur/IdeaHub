@@ -1,3 +1,4 @@
+import { Vote } from './../shared/vote.enum';
 import { HttpStatus, HttpException } from '@nestjs/common';
 import { IdeaDTO, IdeaRO } from './idea.dto';
 import { IdeaEntity } from './idea.entity';
@@ -19,7 +20,15 @@ export class IdeaService {
 
 
     private toResponseObject(idea: IdeaEntity): IdeaRO{
-        return {...idea, author: idea.author.toResponseObject(false)};
+        let responseObject:any = {...idea, author: idea.author.toResponseObject(false)};
+        if(responseObject.upvotes){
+            responseObject.upvotes= idea.upvotes.length;
+        }
+        if(responseObject.downvotes){
+            responseObject.downvotes= idea.downvotes.length;
+        }
+
+        return responseObject;
     }
 
     private checkOwnerShips(idea:IdeaEntity, userId:string){
@@ -28,13 +37,38 @@ export class IdeaService {
         }
     }
 
+    private async votes(idea:IdeaEntity,user:UserEntity, vote:Vote){
+        const opposite = vote === Vote.up ? Vote.down : Vote.up;
+
+        if(
+            idea[opposite].filter(vote => vote.id === user.id).length>0 ||
+            idea[vote].filter(vote => vote.id === user.id).length>0
+        ){
+            idea[opposite] = idea[opposite].filter(vote => vote.id !== user.id);
+            idea[vote] = idea[vote].filter(vote => vote.id !== user.id);
+
+            await this.ideaRespository.save(idea);
+        }else if(idea[vote].filter(vote => vote.id === user.id).length<1){
+            
+            idea[vote].push(user);
+            await this.ideaRespository.save(idea);
+
+        }else{
+            throw new HttpException('Unable to cast vote', HttpStatus.BAD_REQUEST);
+        }
+        return idea;
+
+    }
+
+
+
     async getAllIdeas(): Promise<IdeaRO[]>{
-        const ideas = await this.ideaRespository.find({ relations:['author']});
+        const ideas = await this.ideaRespository.find({ relations:['author','upvotes','downvotes']});
         return ideas.map( idea => this.toResponseObject(idea));
     }
 
     async getIdea(id:string):Promise<IdeaRO>{
-        const idea= await this.ideaRespository.findOne({where:{id}, relations:['author']});
+        const idea= await this.ideaRespository.findOne({where:{id}, relations:['author','upvotes','downvotes']});
         if(! idea){
             throw new HttpException("Not Found", HttpStatus.NOT_FOUND);
         }
@@ -53,7 +87,7 @@ export class IdeaService {
 
     async updateIdea(id:string, idea:string,description:string, userId:string){
         
-        let updatedIdea = await this.ideaRespository.findOne({ where :{id}, relations:['author']});
+        let updatedIdea = await this.ideaRespository.findOne({ where :{id},relations:['author','upvotes','downvotes']});
         
         if(! updatedIdea){
             throw new HttpException("Not Found", HttpStatus.NOT_FOUND);
@@ -74,13 +108,31 @@ export class IdeaService {
     }
 
     async deleteIdea(id:string,userId:string){
-        const idea = await this.ideaRespository.findOne({where:{id},relations:['author']});
+        const idea = await this.ideaRespository.findOne({where:{id},relations:['author','upvotes','downvotes']});
         if(! idea){
             throw new HttpException("Not Found", HttpStatus.NOT_FOUND);
         }
         this.checkOwnerShips(idea,userId);
         await this.ideaRespository.delete({id});
         return {"deleted": true};
+    }
+
+
+
+    async upvotes(id:string,userId:string){
+       
+        let idea = await this.ideaRespository.findOne({where:{id},relations:['author','upvotes','downvotes']});
+        const user = await this.userRepository.findOne({where:{id:userId}});
+        idea= await this.votes(idea,user,Vote.up);
+        return this.toResponseObject(idea);
+    }
+
+    async downvotes(id:string,userId:string){
+              
+        let idea = await this.ideaRespository.findOne({where:{id},relations:['author','upvotes','downvotes']});
+        const user = await this.userRepository.findOne({where:{id:userId}});
+        idea= await this.votes(idea,user,Vote.down);
+        return this.toResponseObject(idea);
     }
 
 
