@@ -1,4 +1,5 @@
-import { UserRO } from './../user/user.dto';
+import { UserEntity } from './../user/user.entity';
+import { CommentEntity } from './../comment/comment.entity';
 export class IdeaDTO{
     idea:string;
     description:string;
@@ -10,7 +11,8 @@ export class IdeaRO{
     updated:Date;
     idea:string;
     description:string;
-    author:UserRO;
+    author:UserEntity;
     upvotes?: number;
     dowvotes ?: number;
+    comments ?: CommentEntity[];
 }

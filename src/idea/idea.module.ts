@@ -1,3 +1,4 @@
+import { CommentEntity } from './../comment/comment.entity';
 import { IdeaEntity } from './idea.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
@@ -6,7 +7,7 @@ import { IdeaService } from './idea.service';
 import { UserEntity } from 'src/user/user.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([IdeaEntity, UserEntity])],
+  imports:[TypeOrmModule.forFeature([IdeaEntity, UserEntity, CommentEntity])],
   controllers: [IdeaController],
   providers: [IdeaService]
 })

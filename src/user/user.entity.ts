@@ -35,10 +35,10 @@ export class UserEntity{
     }
 
     toResponseObject(showToken:boolean=true):UserRO{
-        const {id, username, email, created,token} = this;
+        const {id, username, email, created} = this;
         let responseObject:any ={id,username, email, created};
         if(showToken){
-            responseObject.token =token;
+            responseObject.token =this.token;
         }
         if(this.ideas){
            responseObject.ideas=this.ideas;
