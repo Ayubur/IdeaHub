@@ -1,11 +1,11 @@
-# App Ideas App
+# IdeaHub
 
 A place to see and post ideas in the style of reddit and twitter
 
 ## User Stories
 
 - Authenticate users
-- Users can crud ideas
+- Users can CRUD ideas
 - Users can upvote and down-vote ideas
 - Users can bookmark ideas
 - Users can comment on ideas
@@ -16,4 +16,3 @@ A place to see and post ideas in the style of reddit and twitter
 - Database         - PostgreSQL
 - REST API         - Nest Js
 - REST Frontend    - React with Redux
-- GraphQL Frontend - React with Apollo Client
