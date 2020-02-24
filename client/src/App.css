@@ -1,0 +1,11 @@
+.body-content{
+    margin-top: 120px;
+}
+
+.auth-error{
+    padding: 12px;
+    color: red;
+    font-weight: bold;
+    background-color: #f0e1e1;
+    border-radius: 3px;
+}
