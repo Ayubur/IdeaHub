@@ -10,8 +10,10 @@ class Ideas extends Component{
     }
     render(){
         return(
+         <div className="body-content">
            <div className="container">
                <p>hello</p>
+           </div>
            </div>
         );
     }

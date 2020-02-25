@@ -5,10 +5,6 @@ import * as actions from '../../actions';
 
 class Register extends Component{
 
-    constructor(props){
-        super(props);
-    }
-
     componentDidMount(){
         this.props.removeError();
     }

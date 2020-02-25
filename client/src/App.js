@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Ideas from "./components/ideas/Ideas";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
+import Logout from "./components/auth/Logout";
 import {BrowserRouter, Route} from 'react-router-dom';
 
 import {Provider} from "react-redux";
@@ -16,18 +17,21 @@ import throttle from 'lodash.throttle';
 
 
 const App=()=>{
-      const persistedState = loadState();
+        const persistedState = localStorage.getItem('state') ? {
+          auth:{user:{token:localStorage.getItem('state')}}
+        } : {
+          auth:{user:null}
+        };
 
-      const store = createStore(reducers,persistedState,composeWithDevTools(
-        applyMiddleware(reduxThunk)
-    ));
+        const store = createStore(reducers,persistedState,composeWithDevTools(
+          applyMiddleware(reduxThunk)
+      ));
 
-    
-      store.subscribe(throttle(() => {
-        saveState({
-          auth: store.getState().auth
-        });
-      }, 1000));
+      // store.subscribe(throttle(() => {
+      //   saveState({
+      //     auth: {user: store.getState().auth}
+      //   });
+      // }, 1000));
   
   return (
       <React.Fragment>
@@ -38,6 +42,7 @@ const App=()=>{
                <Route exact path="/" component={Ideas} />
                <Route exact path="/login" component={Login} />
                <Route exact path="/register" component={Register}/>
+               <Route exact path="/logout" component={Logout}/>
             </React.Fragment>
         </BrowserRouter>
         </Provider>

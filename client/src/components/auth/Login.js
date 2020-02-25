@@ -1,6 +1,40 @@
 import React,{Component } from 'react';
+import {compose} from 'redux';
+import {connect} from 'react-redux';
+import * as actions from '../../actions';
 
 class Login extends Component{
+
+    constructor(props){
+        super(props);
+    }
+
+    componentDidMount(){
+        this.props.removeError();
+    }
+    
+    handleForm = (e)=>{
+        e.preventDefault();
+        const email = e.target.email.value;
+        const password=e.target.password.value;
+
+        const registrationData={
+            email,
+            password
+        }
+
+       this.props.login(registrationData,()=>{
+           this.props.history.push('/');
+       })
+    }
+
+    errorMessage(){
+        if(this.props.error !=""){
+            return(
+                <p className="auth-error">{this.props.error}</p>
+            );
+        }
+    }
 
     render(){
         return(
@@ -13,10 +47,12 @@ class Login extends Component{
                         <p className="card-header-title">Login</p>
                     </header>
                     <div className="card-content">
+                       { this.errorMessage()}
+                    <form onSubmit={this.handleForm}>
                         <div className="field">
                           <label className="label">Email</label>
                                 <div className="control">
-                                    <input className="input" type="email" name="email" placeholder="Enter Email" />
+                                 <input className="input" type="email" name="email" placeholder="Enter Email" />
                                 </div>
                         </div>
                         <div className="field">
@@ -30,6 +66,7 @@ class Login extends Component{
                                 <button className="button is-primary">Login</button>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -41,4 +78,10 @@ class Login extends Component{
     }
 }
 
-export default Login;
+function mapStateToProps(state){
+    return {error:state.auth.error};
+}
+
+export default compose(
+    connect(mapStateToProps,actions)
+) (Login);

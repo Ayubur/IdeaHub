@@ -14,7 +14,7 @@ import * as actions from '../actions';
         <a href="#" className="navbar-item">
              Profile
           </a>
-          <a href="#" className="navbar-item">
+          <a href="/logout" className="navbar-item">
             Logout
           </a>
         </div>
@@ -70,7 +70,7 @@ import * as actions from '../actions';
 
 
  function mapStateToProps(state){
-          return {user:state.auth.user};
+      return {user:state.auth.user};
 }
 
  export default compose(

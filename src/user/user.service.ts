@@ -24,6 +24,7 @@ export class UserService {
      if(! allFieldsFilledIn){
         throw new HttpException("All field required to filled in",HttpStatus.BAD_REQUEST);
      }
+     
         const user = await this.userRespository.findOne({where:{email}});
         if(!user || !(await user.comparePassword(password))){
             throw new HttpException("Invalid email/password",HttpStatus.BAD_REQUEST);

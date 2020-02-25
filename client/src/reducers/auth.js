@@ -1,4 +1,4 @@
-import {AUTH_USER, AUTH_ERROR,INTERNAL_ERROR, REMOVE_ERROR} from '../actions/types';
+import {AUTH_USER, AUTH_ERROR,INTERNAL_ERROR, REMOVE_ERROR,AUTH_LOGOUT} from '../actions/types';
 
 const INITIAL_STATE={
         user:null,
@@ -11,6 +11,8 @@ const auth =(state=INITIAL_STATE, actions)=>{
             return {...state, user:actions.payload, error:""};
         case AUTH_ERROR:
             return {...state, error:actions.payload};
+        case AUTH_LOGOUT:
+            return {...state, user:actions.payload,error:""};
         case INTERNAL_ERROR:
             return {...state,error:actions.payload};
         case REMOVE_ERROR:
