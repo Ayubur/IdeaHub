@@ -4,7 +4,7 @@ import axiosConfig from '../axiosConfig';
 export const register= (formData, callback)=> async dispatch =>{
     try{
         const response = await axiosConfig.post("/register", formData);
-        if( response.data.code==400&&response.data.message){
+        if( response.data.code==400 && response.data.message){
                     dispatch({
                         type: AUTH_ERROR,
                         payload: response.data.message
@@ -43,7 +43,7 @@ export const login= (formData, callback)=> async dispatch =>{
                         type: AUTH_USER,
                         payload: response.data
                 });
-                
+
                localStorage.removeItem('state');
                localStorage.setItem('state',response.data.token);
 
