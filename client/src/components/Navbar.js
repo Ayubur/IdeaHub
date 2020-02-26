@@ -12,6 +12,9 @@ import * as actions from '../actions';
       return(
         <div className="navbar-end">
         <a href="#" className="navbar-item">
+               Submit New Idea
+          </a>
+        <a href="#" className="navbar-item">
              Profile
           </a>
           <a href="/logout" className="navbar-item">
@@ -22,6 +25,9 @@ import * as actions from '../actions';
     }else{
       return(
         <div className="navbar-end">
+          <a href="#" className="navbar-item">
+               Submit New Idea
+          </a>
         <a href="/login" className="navbar-item">
              Login
           </a>
