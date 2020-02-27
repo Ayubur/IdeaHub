@@ -2,6 +2,21 @@
     margin-top: 120px;
 }
 
+.text-center{
+    text-align: center;
+}
+
+.networkError{
+    top: 50%;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    color: red;
+}
+
+
 .card{
     background-color: #f4f3f3;
 }

@@ -1,15 +1,19 @@
 import React,{Component } from 'react';
+import Loader from 'react-loader';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import * as actions from '../../actions';
 import axiosConfig from '../../axiosConfig';
+
+import NetworkError from '../NetworkError';
 
 class Ideas extends Component{
 
     constructor(props){
         super(props);
         this.state={
-            ideas :null
+            ideas :null,
+            networkError:false
         }
     }
 
@@ -22,7 +26,9 @@ class Ideas extends Component{
             });
 
         }catch(e){
-            console.log(e);
+            this.setState({
+                networkError:true
+            })
         }
     }
 
@@ -85,11 +91,16 @@ class Ideas extends Component{
             })
         }else{
                return(
-                   <p>hello</p>
+                <Loader lines={13} length={15} width={8} radius={30}
+                        corners={1} rotate={0} direction={1} color="#288073" speed={1}
+                        trail={60} shadow={false} hwaccel={false} className="spinner"
+                        zIndex={2e9} top="50%" left="50%" scale={1.00}
+                        loadedClassName="loadedContent"/>
                )
         }
     } 
     render(){
+        if(! this.state.networkError){
         return(
          <div className="row">
            <div className="container">
@@ -118,6 +129,11 @@ class Ideas extends Component{
               </div>
            </div>
         );
+       }else{
+           return(
+               <NetworkError />
+           );
+       }
     }
 }
 
