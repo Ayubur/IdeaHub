@@ -7,22 +7,22 @@ import axiosConfig from '../../axiosConfig';
 
 import NetworkError from '../NetworkError';
 
-class Ideas extends Component{
+class Idea extends Component{
 
     constructor(props){
         super(props);
         this.state={
-            ideas :null,
+            idea :null,
             networkError:false
         }
     }
 
      async componentDidMount(){
         try{
-
-            const {data}= await axiosConfig.get('/api/ideas');
+            const id= this.props.match.params.id;
+            const {data}= await axiosConfig.get(`/api/ideas/${id}`);
             this.setState({
-                ideas:data
+                idea:data
             });
 
         }catch(e){
@@ -59,12 +59,12 @@ class Ideas extends Component{
         } else {
         r = (parseInt(delta / 86400, 10)).toString() + ' days ago';
         }
-        return  r;
+        return r;
     };
 
     displayIdeas(){
-        if(this.state.ideas){
-            return this.state.ideas.map(idea =>{
+        const {idea}=this.state;
+        if(idea){
                 return(
                  <div className="card ideaMargin wrapper" key={idea.id}>
                 <div className="card-left-content">
@@ -93,9 +93,7 @@ class Ideas extends Component{
                     </div>
                     </div>
                     <div className="content">
-                    <Link to={`/idea/${idea.id}`}>
                          <h5>{idea.idea}</h5>
-                    </Link>
                         <p>{idea.description}</p>
                         <p>
                             <small><i>posted {this.relativeTime(idea.created)}</i></small>
@@ -111,19 +109,16 @@ class Ideas extends Component{
                         </span>
                         </p>
                         <p className="card-footer-item">
-                        <Link to={`/idea/${idea.id}`}>
                         <span className="icon button">
                            <i className="fas fa-comments"></i>
                            comments
                         <span className="badge">{idea.comments.length}</span>
                         </span>
-                        </Link>
                         </p>
                     </footer>
                 </div>
             </div>
                 );
-            })
         }else{
             return(
                 <div className="lds-facebook">
@@ -138,23 +133,8 @@ class Ideas extends Component{
     render(){
       if(! this.state.networkError){
         return(
-         <div className="row">
+          <div className="idea-content">
            <div className="container">
-           <section className="hero">
-                <div className="hero-body">
-                    <h1 className="title">
-                        IdeaHub
-                    </h1>
-                    <div className="hero-content">
-                    A live crowd-sourced collection of ideas for new apps & business ideas that have been requested by the internet. Sorted by Hot, Top and New. With upvotes and downvotes.
-                   To post your own idea click the "submit a new idea" button below.<br/><br/>
-                    <p>
-                         <button className="button is-warning">Submit a new idea</button>
-                    </p>
-                    </div>
-                </div>
-                </section>
-
                     <div className="row">
                     <div className="columns is-desktop">
                         <div className="column is-three-fifths is-offset-one-fifth">
@@ -163,7 +143,7 @@ class Ideas extends Component{
                     </div>
                     </div>
               </div>
-           </div>
+            </div>
         );
 
        }else{
@@ -174,4 +154,10 @@ class Ideas extends Component{
     }
 }
 
-export default Ideas;
+function mapStateToProps(state){
+    return {error:state.auth.error};
+}
+
+export default compose(
+    connect(mapStateToProps,actions)
+) (Idea);

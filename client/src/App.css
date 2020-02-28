@@ -1,4 +1,46 @@
 
+/** loader  start **/
+.lds-facebook {
+    display: inline-block;
+    position: relative;
+    width: 100px;
+    height: 80px;
+    left: 45%;
+  }
+  .lds-facebook div {
+    display: inline-block;
+    position: absolute;
+    left: 8px;
+    width: 16px;
+    background: #288073;
+    animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+  }
+  .lds-facebook div:nth-child(1) {
+    left: 8px;
+    animation-delay: -0.24s;
+  }
+  .lds-facebook div:nth-child(2) {
+    left: 32px;
+    animation-delay: -0.12s;
+  }
+  .lds-facebook div:nth-child(3) {
+    left: 56px;
+    animation-delay: 0;
+  }
+  @keyframes lds-facebook {
+    0% {
+      top: 8px;
+      height: 64px;
+    }
+    50%, 100% {
+      top: 24px;
+      height: 32px;
+    }
+  }
+  
+
+/** loader end  **/
+
 
 /** Idea Card left start**/
 
@@ -19,7 +61,7 @@
 }
 
 .upvote{
-    margin-top: 70px;
+    margin-top: 55px;
 }
 
 .fa-caret-down{
@@ -27,7 +69,7 @@
 }
 
 .downvote{
-    margin-top: 12px;
+    margin-top: 0px;
 }
 
 
@@ -54,16 +96,30 @@
 
 .fa-star{
     font-size: 15px;
+    padding-right: 4px;
 }
 
 .fa-comments{
     font-size: 15px;
+    padding-right: 4px;
+
+}
+
+.badge{
+    margin-left: 4px;
+    border-radius: 40%;
+    padding: 1px 6px;
+    background-color: silver;
 }
 
 /** Idea card footer end **/
 
-.body-content{
+.auth-content{
     margin-top: 120px;
+}
+
+.idea-content{
+    margin-top: 75px;
 }
 
 .text-center{

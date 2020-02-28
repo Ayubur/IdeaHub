@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import Ideas from "./components/ideas/Ideas";
+import Idea from "./components/ideas/idea";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Logout from "./components/auth/Logout";
@@ -26,13 +27,6 @@ const App=()=>{
         const store = createStore(reducers,persistedState,composeWithDevTools(
           applyMiddleware(reduxThunk)
       ));
-
-      // store.subscribe(throttle(() => {
-      //   saveState({
-      //     auth: {user: store.getState().auth}
-      //   });
-      // }, 1000));
-  
   return (
       <React.Fragment>
         <Provider store={store}>
@@ -40,6 +34,7 @@ const App=()=>{
             <React.Fragment>
                <Navbar />
                <Route exact path="/" component={Ideas} />
+               <Route exact path="/idea/:id" component={Idea} />
                <Route exact path="/login" component={Login} />
                <Route exact path="/register" component={Register}/>
                <Route exact path="/logout" component={Logout}/>

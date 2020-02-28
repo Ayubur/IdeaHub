@@ -36,7 +36,7 @@ class Register extends Component{
 
     render(){
         return(
-    <div className="body-content">
+    <div className="auth-content">
                 <div className="container">
                     <div className="columns is-desktop">
                      <div className="column is-three-fifths is-offset-one-fifth">
