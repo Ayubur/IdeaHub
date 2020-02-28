@@ -1,3 +1,67 @@
+
+
+/** Idea Card left start**/
+
+.wrapper{
+    display: flex;
+}
+.card-left-content{
+    flex: 0 0 7%; 
+    margin-left: 9px;
+}
+
+.card-content{
+   flex: 1;
+}
+
+.fa-caret-up{
+    font-size: 65px;
+}
+
+.upvote{
+    margin-top: 70px;
+}
+
+.fa-caret-down{
+    font-size: 65px;
+}
+
+.downvote{
+    margin-top: 12px;
+}
+
+
+.icon.button{
+    border-color: #fff;
+    border-width: 0;
+    color: #9e9e9e;
+}
+
+/** Idea Card left end**/
+
+
+/** Idea card footer start **/
+
+.card-footer{
+    padding: 0;
+    font-size: 17px;
+}
+
+.card-footer-item{
+    padding: 0 !important;
+    margin-top: 8px;
+}
+
+.fa-star{
+    font-size: 15px;
+}
+
+.fa-comments{
+    font-size: 15px;
+}
+
+/** Idea card footer end **/
+
 .body-content{
     margin-top: 120px;
 }
@@ -29,6 +93,9 @@
     border-radius: 3px;
 }
 
+
+/** Idea hero jumbotron start **/
+
 .hero{
     margin-top: 80px;
     color: #ecf0f1;
@@ -51,6 +118,8 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+/** Idea hero jumbotron end **/
 
 .ideaMargin{
     margin-top: 16px;

@@ -66,8 +66,20 @@ class Ideas extends Component{
         if(this.state.ideas){
             return this.state.ideas.map(idea =>{
                 return(
-                    <div className="card ideaMargin" key={idea.id}>
-                <div className="card-content">
+                 <div className="card ideaMargin wrapper" key={idea.id}>
+                <div className="card-left-content">
+                    <div className="upvote">
+                    <span className="icon is-large button">
+                           <i className="fas fa-caret-up"></i>
+                    </span>
+                    </div>
+                    <div className="downvote">
+                    <span className="icon is-large button">
+                           <i className="fas fa-caret-down"></i>
+                    </span> 
+                   </div>
+                </div>
+                  <div className="card-content">
                     <div className="media">
                         <div className="media-left">
                         <figure className="image is-48x48">
@@ -85,22 +97,37 @@ class Ideas extends Component{
                             <small><i>{this.relativeTime(idea.created)}</i></small>
                         </p>
                      </div>
+
+                     <footer className="card-footer">
+                        <p className="card-footer-item">
+                        <span>
+                        <span className="icon button">
+                               <i className="far fa-star"></i>bookmark
+                        </span>
+                        </span>
+                        </p>
+                        <p className="card-footer-item">
+                        <span>
+                        <span className="icon button">
+                           <i className="fas fa-comments"></i>comments
+                        </span>
+                            
+                        </span>
+                        </p>
+                    </footer>
                 </div>
             </div>
                 );
             })
         }else{
-               return(
-                <Loader lines={13} length={15} width={8} radius={30}
-                        corners={1} rotate={0} direction={1} color="#288073" speed={1}
-                        trail={60} shadow={false} hwaccel={false} className="spinner"
-                        zIndex={2e9} top="50%" left="50%" scale={1.00}
-                        loadedClassName="loadedContent"/>
-               )
+            return(
+                       <Loader />
+
+            )
         }
     } 
     render(){
-        if(! this.state.networkError){
+      if(! this.state.networkError){
         return(
          <div className="row">
            <div className="container">
@@ -129,6 +156,7 @@ class Ideas extends Component{
               </div>
            </div>
         );
+
        }else{
            return(
                <NetworkError />
