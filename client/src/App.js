@@ -2,7 +2,8 @@ import React from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import Ideas from "./components/ideas/Ideas";
-import Idea from "./components/ideas/idea";
+import Idea from "./components/ideas/Idea";
+import CreateIdea from "./components/ideas/CreateIdea";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Logout from "./components/auth/Logout";
@@ -34,7 +35,8 @@ const App=()=>{
             <React.Fragment>
                <Navbar />
                <Route exact path="/" component={Ideas} />
-               <Route exact path="/idea/:id" component={Idea} />
+               <Route exact path="/ideas/:id" component={Idea} />
+               <Route exact path="/idea/create" component={CreateIdea} />
                <Route exact path="/login" component={Login} />
                <Route exact path="/register" component={Register}/>
                <Route exact path="/logout" component={Logout}/>

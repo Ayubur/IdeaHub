@@ -11,7 +11,7 @@ import * as actions from '../actions';
     if(this.props.user){
       return(
         <div className="navbar-end">
-        <a href="#" className="navbar-item">
+        <a href="/idea/create" className="navbar-item">
                Submit New Idea
           </a>
         <a href="#" className="navbar-item">
@@ -25,7 +25,7 @@ import * as actions from '../actions';
     }else{
       return(
         <div className="navbar-end">
-          <a href="#" className="navbar-item">
+          <a href="/idea/create" className="navbar-item">
                Submit New Idea
           </a>
         <a href="/login" className="navbar-item">

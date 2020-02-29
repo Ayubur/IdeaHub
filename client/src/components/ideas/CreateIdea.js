@@ -3,7 +3,7 @@ import {compose} from 'redux';
 import {connect} from 'react-redux';
 import * as actions from '../../actions';
 
-class Login extends Component{
+class CreateIdea extends Component{
 
     constructor(props){
         super(props);
@@ -11,21 +11,32 @@ class Login extends Component{
 
     componentDidMount(){
         this.props.removeError();
+        this.shouldNavigateAway();
+    }
+
+    shouldNavigateAway(){
+        if(! this.props.auth){
+            this.props.history.push("/login");
+        }
     }
     
     handleForm = (e)=>{
         e.preventDefault();
-        const email = e.target.email.value;
-        const password=e.target.password.value;
+        const idea= e.target.idea.value;
+        const description= e.target.description.value;
+        const token= this.props.auth.token;
 
-        const registrationData={
-            email,
-            password
+
+        const submittedIdea={
+            idea,
+            description
         };
 
-       this.props.login(registrationData,()=>{
-           this.props.history.push('/');
-       })
+        this.props.createIdea(submittedIdea,token,()=>{
+            this.props.history.push(`/ideas/${this.props.createdIdea.id}`);
+        });
+
+        
     }
 
     errorMessage(){
@@ -44,26 +55,26 @@ class Login extends Component{
                      <div className="column is-three-fifths is-offset-one-fifth">
                 <div className="card">
                     <header className="card-header">
-                        <p className="card-header-title">Login</p>
+                        <p className="card-header-title">Create Idea</p>
                     </header>
                     <div className="card-content">
                        { this.errorMessage()}
                     <form onSubmit={this.handleForm}>
                         <div className="field">
-                          <label className="label">Email</label>
+                          <label className="label">Idea</label>
                                 <div className="control">
-                                 <input className="input" type="email" name="email" placeholder="Enter Email" />
+                                 <input className="input" type="text" name="idea" placeholder="Enter Idea" />
                                 </div>
                         </div>
                         <div className="field">
-                            <label className="label">Password</label>
+                            <label className="label">Description</label>
                             <div className="control">
-                                <input className="input" type="password" name="password" placeholder="Enter Password" />
+                                <textarea className="textarea" name="description" placeholder="Enter description"></textarea>
                             </div>
                         </div>
                         <div className="field">
                             <div className="control">
-                                <button className="button is-primary">Login</button>
+                                <button className="button is-primary">submit</button>
                             </div>
                         </div>
                         </form>
@@ -79,9 +90,13 @@ class Login extends Component{
 }
 
 function mapStateToProps(state){
-    return {error:state.auth.error};
+    return {
+        auth:state.auth.user,
+        createdIdea:state.idea.idea,
+        error:state.idea.error
+    };
 }
 
 export default compose(
     connect(mapStateToProps,actions)
-) (Login);
+) (CreateIdea);

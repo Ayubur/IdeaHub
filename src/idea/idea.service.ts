@@ -77,6 +77,10 @@ export class IdeaService {
 
 
     async saveIdea(userId:string,data:IdeaDTO):Promise<IdeaRO>{
+        const allFieldsFilledIn = Object.keys(data).every((key) => !!data[key]);
+        if(! allFieldsFilledIn){
+            throw new HttpException("All field required to filled in",HttpStatus.BAD_REQUEST);
+         }
 
         const user = await this.userRepository.findOne({where:{id:userId}})
         const createdIdea = await this.ideaRespository.create({...data,author:user});

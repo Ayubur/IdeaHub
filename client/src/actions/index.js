@@ -1,4 +1,4 @@
-import {AUTH_USER,AUTH_ERROR,INTERNAL_ERROR,REMOVE_ERROR,AUTH_LOGOUT} from './types';
+import {AUTH_USER,AUTH_ERROR,INTERNAL_ERROR,REMOVE_ERROR,AUTH_LOGOUT,IDEA_CREATE, IDEA_ERROR} from './types';
 import axiosConfig from '../axiosConfig';
 
 export const register= (formData, callback)=> async dispatch =>{
@@ -66,12 +66,37 @@ export const signout = ()=> dispatch=>{
     })
 }
 
+export const createIdea=(formData,token,callback)=> async dispatch =>{
+
+    try{
+        const response = await axiosConfig.post("/api/ideas", formData,{
+            headers:{
+                authorization: `Bearer ${token}`
+            }
+        });
+        if(response.data.code==400 || response.data.code==403 || response.data.message){
+                    dispatch({
+                        type: IDEA_ERROR,
+                        payload: response.data.message
+                    });
+        }else{
+                dispatch({
+                        type: IDEA_CREATE,
+                        payload: response.data
+                });
+
+                callback();
+        }
+
+    }catch(e){
+        dispatch({type:INTERNAL_ERROR, payload:"Internal Server Problem"});
+    }
+         
+}
+
 export const removeError=()=> dispatch=>{
             dispatch({
                 type: REMOVE_ERROR,
                 payload:""
         });
 }
-
-
-

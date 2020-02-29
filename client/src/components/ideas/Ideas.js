@@ -93,7 +93,7 @@ class Ideas extends Component{
                     </div>
                     </div>
                     <div className="content">
-                    <Link to={`/idea/${idea.id}`}>
+                    <Link to={`/ideas/${idea.id}`}>
                          <h5>{idea.idea}</h5>
                     </Link>
                         <p>{idea.description}</p>
@@ -111,7 +111,7 @@ class Ideas extends Component{
                         </span>
                         </p>
                         <p className="card-footer-item">
-                        <Link to={`/idea/${idea.id}`}>
+                        <Link to={`/ideas/${idea.id}`}>
                         <span className="icon button">
                            <i className="fas fa-comments"></i>
                            comments
@@ -149,7 +149,7 @@ class Ideas extends Component{
                     A live crowd-sourced collection of ideas for new apps & business ideas that have been requested by the internet. Sorted by Hot, Top and New. With upvotes and downvotes.
                    To post your own idea click the "submit a new idea" button below.<br/><br/>
                     <p>
-                         <button className="button is-warning">Submit a new idea</button>
+                         <Link to="/idea/create" className="button is-warning">Submit a new idea</Link>
                     </p>
                     </div>
                 </div>
