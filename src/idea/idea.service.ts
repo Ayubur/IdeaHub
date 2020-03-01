@@ -61,8 +61,13 @@ export class IdeaService {
 
     }
 
-    async getAllIdeas(): Promise<IdeaRO[]>{
-        const ideas = await this.ideaRespository.find({ relations:['author','upvotes','downvotes','comments']});
+    async getAllIdeas(page:number=1): Promise<IdeaRO[]>{
+        const ideas = await this.ideaRespository.find({
+                relations:['author','upvotes','downvotes','comments'],
+                take:15,
+                skip:15*(page-1),
+                order: {created:'DESC'}
+            });
         return ideas.map( idea => this.toResponseObject(idea));
     }
 

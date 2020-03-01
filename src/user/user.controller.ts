@@ -1,8 +1,7 @@
 import { AuthGuard } from './../shared/auth.guard';
 import { UserLoginDTO, UserRegisterDTO } from './user.dto';
 import { UserService } from './user.service';
-import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
-import { User } from './user.decorator';
+import { Controller, Post, Get, Body, UseGuards, Query } from '@nestjs/common';
 
 @Controller()
 export class UserController {
@@ -10,8 +9,8 @@ export class UserController {
     constructor(private userService:UserService){}
 
     @Get('api/users')
-    getAllUsers(@User() user){
-        return this.userService.getAll();
+    getAllUsers(@Query('page') page:number){
+        return this.userService.getAll(page);
     }
 
     @Post('login')

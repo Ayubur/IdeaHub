@@ -1,7 +1,7 @@
 import { AuthGuard } from './../shared/auth.guard';
 import { IdeaDTO } from './idea.dto';
 import { IdeaService } from './idea.service';
-import { Controller, Get, Param, Post, Patch, Delete, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Patch, Delete, Body, UseGuards, Query } from '@nestjs/common';
 import { User } from 'src/user/user.decorator';
 
 @Controller('api/ideas')
@@ -10,8 +10,8 @@ export class IdeaController {
     constructor(private ideaService :IdeaService){}
 
     @Get()
-    getAllIdeas(){
-      return this.ideaService.getAllIdeas();
+    getAllIdeas(@Query('page') page:number){
+      return this.ideaService.getAllIdeas(page);
     }
 
     @Get(":id")
