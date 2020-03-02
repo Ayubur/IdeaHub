@@ -13,6 +13,9 @@ class Ideas extends Component{
         super(props);
         this.state={
             ideas :null,
+            has_more:false,
+            has_previous:false,
+            page:1,
             networkError:false
         }
     }
@@ -22,7 +25,8 @@ class Ideas extends Component{
 
             const {data}= await axiosConfig.get('/api/ideas');
             this.setState({
-                ideas:data
+                ideas:data,
+                has_more: data[data.length-1].has_more
             });
 
         }catch(e){
@@ -61,6 +65,84 @@ class Ideas extends Component{
         }
         return  r;
     };
+
+    nextIdeas = async()=>{
+        let {page}= this.state;
+
+        page= page+1;
+
+        try{
+
+            const {data}= await axiosConfig.get(`/api/ideas?page=${page}`);
+            this.setState({
+                ideas:data,
+                has_more: data[data.length-1].has_more,
+                has_previous:data[data.length-1].has_previous,
+                page:page
+            });
+
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+
+
+    }
+
+    previousIdeas= async()=>{
+        let {page}= this.state;
+
+        page= page-1;
+
+        try{
+
+            const {data}= await axiosConfig.get(`/api/ideas?page=${page}`);
+            this.setState({
+                ideas:data,
+                has_more:data[data.length-1].has_more,
+                has_previous: data[data.length-1].has_previous,
+                page:page
+            });
+
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+
+    }
+
+    displayPaginateButton(){
+        const {has_more,has_previous}=this.state;
+        if(has_more && has_previous){
+            return(
+                <React.Fragment>
+                    <a onClick={this.previousIdeas}>
+                        <span className="previousBtn">previous</span>
+                    </a>
+                    <a onClick={this.nextIdeas}>
+                    <span className="nextBtn">next</span>
+                    </a>
+                </React.Fragment>
+            );
+        }else if(!has_previous && has_more){
+            return(
+                <React.Fragment>
+                    <a onClick={this.nextIdeas}>
+                    <span className="nextBtn">next</span>
+                    </a>
+                </React.Fragment>
+            );
+        }
+        else if(has_previous && !has_more){
+            return(
+                <a onClick={this.previousIdeas}>
+                <span className="previousBtn">previous</span>
+               </a>
+            );
+        }
+    }
 
     displayIdeas(){
         if(this.state.ideas){
@@ -162,6 +244,17 @@ class Ideas extends Component{
                          </div>
                     </div>
                     </div>
+                    <div className="row">
+                            <div className="columns is-desktop">
+                                <div className="column is-three-fifths is-offset-one-fifth ">
+                                {this.displayPaginateButton()}
+                                </div>
+                            </div>
+                    </div>
+                    <div className="horizontal-space"></div>
+                    <div className="horizontal-space"></div>
+                    <div className="horizontal-space"></div>
+                    
               </div>
            </div>
         );

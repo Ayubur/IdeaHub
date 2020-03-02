@@ -1,4 +1,30 @@
 
+/** Pagination start**/
+.previousBtn{
+  float: left;
+  padding: 4px 32px;
+  border-radius: 28px;
+  font-size: 18px;
+  background-color: rgb(241, 235, 235);
+  color: black;
+}
+
+.nextBtn{
+    float: right;
+    padding: 4px 32px;
+    border-radius: 28px;
+    font-size: 18px;
+    background-color: rgb(241, 235, 235);
+    color: black;
+}
+
+/** pagination end **/
+
+.horizontal-space{
+    height: 15px;
+}
+
+
 /** loader  start **/
 .lds-facebook {
     display: inline-block;

@@ -1,4 +1,3 @@
-import { CommentEntity } from './../comment/comment.entity';
 import { Vote } from './../shared/vote.enum';
 import { HttpStatus, HttpException } from '@nestjs/common';
 import { IdeaDTO, IdeaRO } from './idea.dto';
@@ -20,8 +19,8 @@ export class IdeaService {
         ){}
 
 
-    private toResponseObject(idea: IdeaEntity): IdeaRO{
-        let responseObject:any = {...idea, author: idea.author.toResponseObject(false)};
+    private toResponseObject(idea: IdeaEntity, hasMore:boolean=false, hasPrevious:boolean=false): IdeaRO{
+        let responseObject:any = {...idea,has_more: hasMore,has_previous:hasPrevious,author: idea.author.toResponseObject(false)};
         if(responseObject.upvotes){
             responseObject.upvotes= idea.upvotes.length;
         }
@@ -62,13 +61,28 @@ export class IdeaService {
     }
 
     async getAllIdeas(page:number=1): Promise<IdeaRO[]>{
+        const size= 15;
+
+        const totalCount= (await this.ideaRespository.find()).length;
+        const totalPages = Math.ceil(totalCount / size);
+        const hasMore= (totalCount <= size*page) ? false : true;
+
+        if(page==0){
+            page=1;
+        }
+
+        if(page > totalPages){
+            page = totalPages;
+        }
+        const hasPrevious = page==1 ? false :true;
+
         const ideas = await this.ideaRespository.find({
                 relations:['author','upvotes','downvotes','comments'],
-                take:15,
-                skip:15*(page-1),
+                take:size,
+                skip:size*(page-1),
                 order: {created:'DESC'}
             });
-        return ideas.map( idea => this.toResponseObject(idea));
+        return ideas.map( idea => this.toResponseObject(idea, hasMore, hasPrevious));
     }
 
     async getIdea(id:string):Promise<IdeaRO>{
