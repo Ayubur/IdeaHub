@@ -15,8 +15,10 @@ export const register= (formData, callback)=> async dispatch =>{
                         payload: response.data
                 });
                 
-                localStorage.removeItem('state');
-                localStorage.setItem('state',response.data.token);
+                localStorage.removeItem('stateToken');
+                localStorage.removeItem('stateId');
+                localStorage.setItem('stateToken',response.data.token);
+                localStorage.setItem('stateId',response.data.id);
 
                 callback();
         }
@@ -44,8 +46,10 @@ export const login= (formData, callback)=> async dispatch =>{
                         payload: response.data
                 });
 
-               localStorage.removeItem('state');
-               localStorage.setItem('state',response.data.token);
+                localStorage.removeItem('stateToken');
+                localStorage.removeItem('stateId');
+                localStorage.setItem('stateToken',response.data.token);
+                localStorage.setItem('stateId',response.data.id);
 
                 callback();
         }
@@ -93,6 +97,39 @@ export const createIdea=(formData,token,callback)=> async dispatch =>{
     }
          
 }
+
+
+
+export const updateIdea=(formData,token,ideaId,callback)=> async dispatch =>{
+
+    try{
+        const response = await axiosConfig.patch(`/api/ideas/${ideaId}`, formData,{
+            headers:{
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        if(response.data.code==400 || response.data.code==403 || response.data.message){
+                    dispatch({
+                        type: IDEA_ERROR,
+                        payload: response.data.message
+                    });
+        }else{
+                dispatch({
+                        type: IDEA_CREATE,
+                        payload: response.data
+                });
+
+                callback();
+        }
+
+    }catch(e){
+        dispatch({type:INTERNAL_ERROR, payload:"Internal Server Problem"});
+    }
+         
+}
+
+
 
 export const removeError=()=> dispatch=>{
             dispatch({

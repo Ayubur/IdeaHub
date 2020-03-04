@@ -110,6 +110,10 @@ export class IdeaService {
     }
 
     async updateIdea(id:string, idea:string,description:string, userId:string){
+
+        if(idea=='' || description==''){
+            throw new HttpException("All field required to filled in",HttpStatus.BAD_REQUEST);
+        }
         
         let updatedIdea = await this.ideaRespository.findOne({ where :{id},relations:['author','upvotes','downvotes','comments']});
         

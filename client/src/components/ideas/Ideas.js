@@ -6,6 +6,7 @@ import * as actions from '../../actions';
 import axiosConfig from '../../axiosConfig';
 
 import NetworkError from '../NetworkError';
+import Loader from '../Loader';
 
 class Ideas extends Component{
 
@@ -144,6 +145,19 @@ class Ideas extends Component{
         }
     }
 
+    displayEditDelete(authorId,id){
+        if(this.props.auth){
+            if(this.props.auth.id === authorId){
+                return(
+                    <p>
+                        <a href={`/ideas/${id}/edit`}>Edit</a>
+                        <a href="#" className="ml-1">Delete</a>
+                    </p>
+                );
+            }
+        }
+    }
+
     displayIdeas(){
         if(this.state.ideas){
             return this.state.ideas.map(idea =>{
@@ -182,6 +196,7 @@ class Ideas extends Component{
                         <p>
                             <small><i>posted {this.relativeTime(idea.created)}</i></small>
                         </p>
+                        {this.displayEditDelete(idea.author.id,idea.id)}
                      </div>
 
                      <footer className="card-footer">
@@ -208,12 +223,7 @@ class Ideas extends Component{
             })
         }else{
             return(
-                <div className="lds-facebook">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
+                <Loader />
             );
         }
     } 
@@ -267,4 +277,12 @@ class Ideas extends Component{
     }
 }
 
-export default Ideas;
+function mapToStateProps(state){
+    return{
+        auth:state.auth.user
+    };
+}
+
+export default compose(
+    connect(mapToStateProps,actions)
+)(Ideas);

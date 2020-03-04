@@ -20,7 +20,7 @@ class CreateIdea extends Component{
         }
     }
     
-    handleForm = (e)=>{
+    handleForm = (e) => {
         e.preventDefault();
         const idea= e.target.idea.value;
         const description= e.target.description.value;
@@ -63,7 +63,7 @@ class CreateIdea extends Component{
                         <div className="field">
                           <label className="label">Idea</label>
                                 <div className="control">
-                                 <input className="input" type="text" name="idea" placeholder="Enter Idea" />
+                                 <input className="input" type="text" name="idea" placeholder="Enter Idea" ></input>
                                 </div>
                         </div>
                         <div className="field">

@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Ideas from "./components/ideas/Ideas";
 import Idea from "./components/ideas/Idea";
 import CreateIdea from "./components/ideas/CreateIdea";
+import EditIdea from "./components/ideas/EditIdea";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Logout from "./components/auth/Logout";
@@ -19,8 +20,8 @@ import throttle from 'lodash.throttle';
 
 
 const App=()=>{
-        const persistedState = localStorage.getItem('state') ? {
-          auth:{user:{token:localStorage.getItem('state')}}
+        const persistedState = (localStorage.getItem('stateToken') && localStorage.getItem('stateId')) ? {
+          auth:{user:{token:localStorage.getItem('stateToken'),id:localStorage.getItem('stateId')}}
         } : {
           auth:{user:null}
         };
@@ -29,13 +30,14 @@ const App=()=>{
           applyMiddleware(reduxThunk)
       ));
   return (
-      <React.Fragment>
-        <Provider store={store}>
+    
+    <Provider store={store}>
         <BrowserRouter>
             <React.Fragment>
                <Navbar />
                <Route exact path="/" component={Ideas} />
                <Route exact path="/ideas/:id" component={Idea} />
+               <Route exact path="/ideas/:id/edit" component={EditIdea} />
                <Route exact path="/idea/create" component={CreateIdea} />
                <Route exact path="/login" component={Login} />
                <Route exact path="/register" component={Register}/>
@@ -43,7 +45,6 @@ const App=()=>{
             </React.Fragment>
         </BrowserRouter>
         </Provider>
-      </React.Fragment>
   );
 }
 

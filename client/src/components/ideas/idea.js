@@ -6,6 +6,7 @@ import * as actions from '../../actions';
 import axiosConfig from '../../axiosConfig';
 
 import NetworkError from '../NetworkError';
+import Loader from '../Loader';
 
 class Idea extends Component{
 
@@ -121,12 +122,7 @@ class Idea extends Component{
                 );
         }else{
             return(
-                <div className="lds-facebook">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
+                <Loader />
             );
         }
     } 
