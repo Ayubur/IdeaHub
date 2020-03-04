@@ -114,6 +114,33 @@ class Ideas extends Component{
 
     }
 
+    deleteIdea= async (e,id)=>{
+        e.preventDefault();
+        try{
+
+            const {data}= await axiosConfig.delete(`/api/ideas/${id}`,{
+                headers:{
+                    authorization: `Bearer ${this.props.auth.token}`
+                }
+            });
+
+            if(data.deleted == true){
+
+                const {data}= await axiosConfig.get('/api/ideas');
+                this.setState({
+                    ideas:data,
+                    has_more: data[data.length-1].has_more
+                });
+           }
+
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+         
+    }
+
     displayPaginateButton(){
         const {has_more,has_previous}=this.state;
         if(has_more && has_previous){
@@ -151,7 +178,7 @@ class Ideas extends Component{
                 return(
                     <p>
                         <a href={`/ideas/${id}/edit`}>Edit</a>
-                        <a href="#" className="ml-1">Delete</a>
+                        <a onClick={e => this.deleteIdea(e,id)} className="ml-1">Delete</a>
                     </p>
                 );
             }

@@ -62,6 +62,41 @@ class Idea extends Component{
         }
         return r;
     };
+    
+    deleteIdea= async (e,id)=>{
+        e.preventDefault();
+        try{
+
+            const {data}= await axiosConfig.delete(`/api/ideas/${id}`,{
+                headers:{
+                    authorization: `Bearer ${this.props.auth.token}`
+                }
+            });
+
+            if(data.deleted == true){
+                this.props.history.push("/");
+            }
+
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+         
+    }
+
+    displayEditDelete(authorId,id){
+        if(this.props.auth){
+            if(this.props.auth.id === authorId){
+                return(
+                    <p>
+                        <a href={`/ideas/${id}/edit`}>Edit</a>
+                        <a onClick={e => this.deleteIdea(e,id)} className="ml-1">Delete</a>
+                    </p>
+                );
+            }
+        }
+    }
 
     displayIdeas(){
         const {idea}=this.state;
@@ -99,6 +134,9 @@ class Idea extends Component{
                         <p>
                             <small><i>posted {this.relativeTime(idea.created)}</i></small>
                         </p>
+
+                        {this.displayEditDelete(idea.author.id,idea.id)}
+
                      </div>
 
                      <footer className="card-footer">
@@ -151,7 +189,7 @@ class Idea extends Component{
 }
 
 function mapStateToProps(state){
-    return {error:state.auth.error};
+    return {error:state.auth.error,auth:state.auth.user};
 }
 
 export default compose(

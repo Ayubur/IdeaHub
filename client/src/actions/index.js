@@ -63,7 +63,9 @@ export const login= (formData, callback)=> async dispatch =>{
 
 
 export const signout = ()=> dispatch=>{
-    localStorage.removeItem('state');
+
+    localStorage.removeItem('stateToken');
+    localStorage.removeItem('stateId');
     dispatch({
         type: AUTH_LOGOUT,
         payload:null
