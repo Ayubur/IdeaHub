@@ -27,7 +27,8 @@ class Ideas extends Component{
             const {data}= await axiosConfig.get('/api/ideas');
             this.setState({
                 ideas:data,
-                has_more: data[data.length-1].has_more
+                has_more: data[data.length-1].has_more,
+                has_previous: data[data.length-1].has_previous
             });
 
         }catch(e){
@@ -117,7 +118,6 @@ class Ideas extends Component{
     deleteIdea= async (e,id)=>{
         e.preventDefault();
         try{
-
             const {data}= await axiosConfig.delete(`/api/ideas/${id}`,{
                 headers:{
                     authorization: `Bearer ${this.props.auth.token}`
@@ -126,10 +126,11 @@ class Ideas extends Component{
 
             if(data.deleted == true){
 
-                const {data}= await axiosConfig.get('/api/ideas');
+                const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
                 this.setState({
                     ideas:data,
-                    has_more: data[data.length-1].has_more
+                    has_more: data[data.length-1].has_more,
+                    has_previous: data[data.length-1].has_previous
                 });
            }
 
@@ -185,6 +186,65 @@ class Ideas extends Component{
         }
     }
 
+    upvotes = async(e,ideaId)=>{
+        e.preventDefault();
+     if(this.props.auth){
+        try{
+            const {data}= await axiosConfig.post(`/api/ideas/${ideaId}/upvotes`,{},{
+                headers:{
+                    authorization: `Bearer ${this.props.auth.token}`
+                }
+            });
+
+            if(! data.message){
+                const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
+                this.setState({
+                    ideas:data,
+                    has_more: data[data.length-1].has_more,
+                    has_previous: data[data.length-1].has_previous
+                });
+           }
+
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+      }else{
+          this.props.history.push('/login');
+      }
+
+    }
+
+    downvotes=async (e,ideaId)=>{
+        e.preventDefault();
+    if(this.props.auth){
+        try{
+            const {data}= await axiosConfig.post(`/api/ideas/${ideaId}/downvotes`,{},{
+                headers:{
+                    authorization: `Bearer ${this.props.auth.token}`
+                }
+            });
+            if(! data.message){
+                const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
+                this.setState({
+                    ideas:data,
+                    has_more: data[data.length-1].has_more,
+                    has_previous: data[data.length-1].has_previous
+                });
+           }
+
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+      }else{
+          this.props.history.push('/login');
+      }
+    }
+
+
     displayIdeas(){
         if(this.state.ideas){
             return this.state.ideas.map(idea =>{
@@ -193,12 +253,12 @@ class Ideas extends Component{
                 <div className="card-left-content">
                     <div className="upvote">
                      <p className="text-center"><b>{idea.upvotes}</b></p>
-                    <span className="icon is-large button">
+                    <span className="icon is-large button" onClick={e => this.upvotes(e,idea.id)}>
                            <i className="fas fa-caret-up"></i>
                     </span>
                     </div>
                     <div className="downvote">
-                    <span className="icon is-large button">
+                    <span className="icon is-large button" onClick={e => this.downvotes(e,idea.id)}>
                            <i className="fas fa-caret-down"></i>
                     </span> 
                     <p className="text-center"><b>{idea.downvotes}</b></p>
