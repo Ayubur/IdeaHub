@@ -54,10 +54,21 @@ export class IdeaController {
 
     }
 
+    @Post(':id/bookmark')
+    @UseGuards(new AuthGuard())
+    bookmarkIdea(@Param('id') id:string, @User('id') userId:string){
+        return this.ideaService.bookmark(id,userId);
+    }
+
+    @Get(':id/checkBookmark')
+    @UseGuards(new AuthGuard())
+    checkBookmark(@Param('id') id:string, @User('id') userId:string){
+        return this.ideaService.checkBookmark(id,userId);
+    }
+
     @Delete(':id/unbookmark')
     @UseGuards(new AuthGuard())
     unbookmarkIdea(@Param('id') id:string, @User('id') userId:string){
         return this.ideaService.unbookmark(id,userId);
-
     }
 }

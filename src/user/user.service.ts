@@ -19,6 +19,17 @@ export class UserService {
         return users.map(user => user.toResponseObject(false));
     }
 
+
+    async getUser(userId:string){
+        const user = await this.userRespository.findOne({
+            where:{id:userId},
+            relations:['bookmarks']
+        })
+
+        return user.toResponseObject(false);
+    }
+    
+
     async login(data:UserLoginDTO):Promise<UserRO>{
 
         const {email, password}=data;

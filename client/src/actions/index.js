@@ -15,10 +15,8 @@ export const register= (formData, callback)=> async dispatch =>{
                         payload: response.data
                 });
                 
-                localStorage.removeItem('stateToken');
-                localStorage.removeItem('stateId');
-                localStorage.setItem('stateToken',response.data.token);
-                localStorage.setItem('stateId',response.data.id);
+                localStorage.removeItem('state');
+                localStorage.setItem('state',JSON.stringify(response.data));
 
                 callback();
         }
@@ -46,10 +44,8 @@ export const login= (formData, callback)=> async dispatch =>{
                         payload: response.data
                 });
 
-                localStorage.removeItem('stateToken');
-                localStorage.removeItem('stateId');
-                localStorage.setItem('stateToken',response.data.token);
-                localStorage.setItem('stateId',response.data.id);
+                localStorage.removeItem('state');
+                localStorage.setItem('state',JSON.stringify(response.data));
 
                 callback();
         }
@@ -64,8 +60,7 @@ export const login= (formData, callback)=> async dispatch =>{
 
 export const signout = ()=> dispatch=>{
 
-    localStorage.removeItem('stateToken');
-    localStorage.removeItem('stateId');
+    localStorage.removeItem('state');
     dispatch({
         type: AUTH_LOGOUT,
         payload:null

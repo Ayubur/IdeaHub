@@ -178,6 +178,18 @@ export class IdeaService {
         return user.toResponseObject(false);
     }
 
+    async checkBookmark(id:string,userId:string){
+        const idea= await this.ideaRespository.findOne({where:{id}});
+        const user = await this.userRepository.findOne({where:{id:userId},relations:['bookmarks']});
+
+        if(user.bookmarks.filter(bookmark => bookmark.id === idea.id).length <1){
+                return {bookmark:false};
+        }
+        
+        return {bookmark: true}; 
+    }
+
+
     async unbookmark(id:string,userId:string){
         const idea= await this.ideaRespository.findOne({where:{id}});
         const user = await this.userRepository.findOne({where:{id:userId},relations:['bookmarks']});

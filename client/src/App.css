@@ -1,6 +1,11 @@
 .ml-1{
     margin-left: 10px;
 }
+
+.fas.fa-star{
+    color: gold;
+}
+
 /** Pagination start**/
 .previousBtn{
   float: left;

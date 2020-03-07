@@ -17,6 +17,7 @@ class Ideas extends Component{
             has_more:false,
             has_previous:false,
             page:1,
+            bookmarkedIdeas:null,
             networkError:false
         }
     }
@@ -24,12 +25,26 @@ class Ideas extends Component{
      async componentDidMount(){
         try{
 
-            const {data}= await axiosConfig.get('/api/ideas');
+            const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
             this.setState({
                 ideas:data,
                 has_more: data[data.length-1].has_more,
                 has_previous: data[data.length-1].has_previous
             });
+
+            if(this.props.auth){
+                const response= await axiosConfig.get('api/user',{
+                    headers:{
+                        authorization: `Bearer ${this.props.auth.token}`
+                    }
+                });
+
+                if(! response.data.message){
+                    this.setState({
+                        bookmarkedIdeas: response.data.bookmarks
+                    })
+                }
+           }
 
         }catch(e){
             this.setState({
@@ -173,6 +188,128 @@ class Ideas extends Component{
         }
     }
 
+    bookmark = async (e,id) =>{
+        e.preventDefault();
+        if(this.props.auth){
+            try{
+            const {data}= await axiosConfig.post(`/api/ideas/${id}/bookmark`,{},{
+                headers:{
+                    authorization: `Bearer ${this.props.auth.token}`
+                }
+            });
+
+            if(! data.message){
+                const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
+                this.setState({
+                    ideas:data,
+                    has_more: data[data.length-1].has_more,
+                    has_previous: data[data.length-1].has_previous
+                });
+
+                const response= await axiosConfig.get('api/user',{
+                    headers:{
+                        authorization: `Bearer ${this.props.auth.token}`
+                    }
+                });
+
+                if(! response.data.message){
+                    this.setState({
+                        bookmarkedIdeas: response.data.bookmarks
+                    })
+                }
+
+
+           }
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+    }else{
+            this.props.history.push('/login')
+        }
+    }
+
+    unbookmark = async (e,id)=>{
+        e.preventDefault();
+        if(this.props.auth){
+            try{
+                const {data}= await axiosConfig.delete(`/api/ideas/${id}/unbookmark`,{
+                    headers:{
+                        authorization: `Bearer ${this.props.auth.token}`
+                    }
+                });
+    
+                if(! data.message){
+                    const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
+                    this.setState({
+                        ideas:data,
+                        has_more: data[data.length-1].has_more,
+                        has_previous: data[data.length-1].has_previous
+                    });
+    
+                    const response= await axiosConfig.get('api/user',{
+                        headers:{
+                            authorization: `Bearer ${this.props.auth.token}`
+                        }
+                    });
+    
+                    if(! response.data.message){
+                        this.setState({
+                            bookmarkedIdeas: response.data.bookmarks
+                        })
+                    }
+    
+    
+               }
+            }catch(e){
+                this.setState({
+                    networkError:true
+                })
+            }
+
+        }else{
+            this.props.history.push('/login')
+        }
+    }
+  
+
+   displayBookmark(id){
+        if(this.props.auth && this.state.bookmarkedIdeas){
+            if(this.state.bookmarkedIdeas.filter(bookmark => bookmark.id === id)<1){
+                return(
+                    <p className="card-footer-item">
+                    <span onClick={e => this.bookmark(e,id)}>
+                    <span className="icon button" >
+                           <i className="far fa-star"></i>bookmark
+                    </span>
+                    </span>
+                    </p>
+                );
+            }else{
+                return(
+                    <p className="card-footer-item">
+                      <span onClick={e => this.unbookmark(e,id)}>
+                        <span className="icon button">
+                            <i className="fas fa-star"></i>unbookmark
+                        </span>
+                      </span>
+                    </p>
+                ); 
+            }
+        }else{
+            return(
+                <p className="card-footer-item">
+                    <span onClick={e=> this.bookmark(e,id)}>
+                        <span className="icon button">
+                            <i className="far fa-star" ></i>bookmark
+                        </span>
+                    </span>
+                </p>
+            );
+        }
+    }
+
     displayEditDelete(authorId,id){
         if(this.props.auth){
             if(this.props.auth.id === authorId){
@@ -287,13 +424,7 @@ class Ideas extends Component{
                      </div>
 
                      <footer className="card-footer">
-                        <p className="card-footer-item">
-                        <span>
-                        <span className="icon button">
-                               <i className="far fa-star"></i>bookmark
-                        </span>
-                        </span>
-                        </p>
+                        {this.displayBookmark(idea.id)}
                         <p className="card-footer-item">
                         <Link to={`/ideas/${idea.id}`}>
                         <span className="icon button">

@@ -14,11 +14,13 @@ class Idea extends Component{
         super(props);
         this.state={
             idea :null,
+            bookmarkedIdeas:null,
             networkError:false
         }
     }
 
      async componentDidMount(){
+         this.shouldNavigateAway();
         try{
             const id= this.props.match.params.id;
             const {data}= await axiosConfig.get(`/api/ideas/${id}`);
@@ -26,10 +28,28 @@ class Idea extends Component{
                 idea:data
             });
 
+            const response= await axiosConfig.get('api/user',{
+                headers:{
+                    authorization: `Bearer ${this.props.auth.token}`
+                }
+            });
+
+            if(! response.data.message){
+                this.setState({
+                    bookmarkedIdeas: response.data.bookmarks
+                })
+            }
+
         }catch(e){
             this.setState({
                 networkError:true
             })
+        }
+    }
+
+    shouldNavigateAway(){
+        if(! this.props.auth){
+             this.props.history.push('/login');
         }
     }
 
@@ -98,6 +118,118 @@ class Idea extends Component{
         }
     }
 
+
+    bookmark = async (e,id) =>{
+        e.preventDefault();
+            try{
+            const {data}= await axiosConfig.post(`/api/ideas/${id}/bookmark`,{},{
+                headers:{
+                    authorization: `Bearer ${this.props.auth.token}`
+                }
+            });
+
+            if(! data.message){
+                const {data}= await axiosConfig.get(`/api/ideas/${id}`);
+                this.setState({
+                    idea:data
+                });
+
+                const response= await axiosConfig.get('api/user',{
+                    headers:{
+                        authorization: `Bearer ${this.props.auth.token}`
+                    }
+                });
+
+                if(! response.data.message){
+                    this.setState({
+                        bookmarkedIdeas: response.data.bookmarks
+                    })
+                }
+
+
+           }
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+    }
+
+    unbookmark = async (e,id)=>{
+        e.preventDefault();
+        try{
+            const {data}= await axiosConfig.delete(`/api/ideas/${id}/unbookmark`,{
+                headers:{
+                    authorization: `Bearer ${this.props.auth.token}`
+                }
+            });
+
+            if(! data.message){
+                const {data}= await axiosConfig.get(`/api/ideas/${id}`);
+                this.setState({
+                    idea:data
+                });
+
+                const response= await axiosConfig.get('api/user',{
+                    headers:{
+                        authorization: `Bearer ${this.props.auth.token}`
+                    }
+                });
+
+                if(! response.data.message){
+                    this.setState({
+                        bookmarkedIdeas: response.data.bookmarks
+                    })
+                }
+
+
+           }
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+    }
+  
+
+
+
+    displayBookmark(id){
+        if(this.props.auth && this.state.bookmarkedIdeas){
+            if(this.state.bookmarkedIdeas.filter(bookmark => bookmark.id === id)<1){
+                return(
+                    <p className="card-footer-item">
+                    <span onClick={e => this.bookmark(e,id)}>
+                    <span className="icon button" >
+                           <i className="far fa-star"></i>bookmark
+                    </span>
+                    </span>
+                    </p>
+                );
+            }else{
+                return(
+                    <p className="card-footer-item">
+                      <span onClick={e => this.unbookmark(e,id)}>
+                        <span className="icon button">
+                            <i className="fas fa-star"></i>unbookmark
+                        </span>
+                      </span>
+                    </p>
+                ); 
+            }
+        }else{
+            return(
+                <p className="card-footer-item">
+                    <span onClick={e=> this.bookmark(e,id)}>
+                        <span className="icon button">
+                            <i className="far fa-star" ></i>bookmark
+                        </span>
+                    </span>
+                </p>
+            );
+        }
+    }
+
     displayIdeas(){
         const {idea}=this.state;
         if(idea){
@@ -140,13 +272,8 @@ class Idea extends Component{
                      </div>
 
                      <footer className="card-footer">
-                        <p className="card-footer-item">
-                        <span>
-                        <span className="icon button">
-                               <i className="far fa-star"></i>bookmark
-                        </span>
-                        </span>
-                        </p>
+                        {this.displayBookmark(idea.id)}
+
                         <p className="card-footer-item">
                         <span className="icon button">
                            <i className="fas fa-comments"></i>

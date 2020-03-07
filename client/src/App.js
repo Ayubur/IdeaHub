@@ -14,18 +14,14 @@ import {Provider} from "react-redux";
 import { createStore, applyMiddleware } from "redux";
 import reduxThunk from 'redux-thunk';
 import reducers from "./reducers";
-import { loadState,saveState} from './localStorage/localStorage';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import throttle from 'lodash.throttle';
 
 
 const App=()=>{
-        const persistedState = (localStorage.getItem('stateToken') && localStorage.getItem('stateId')) ? {
-          auth:{user:{token:localStorage.getItem('stateToken'),id:localStorage.getItem('stateId')}}
-        } : {
-          auth:{user:null}
+        const persistedState = {
+          auth:{user:JSON.parse(localStorage.getItem('state'))}
         };
-
+        
         const store = createStore(reducers,persistedState,composeWithDevTools(
           applyMiddleware(reduxThunk)
       ));
