@@ -19,38 +19,9 @@ class Idea extends Component{
         }
     }
 
-     async componentDidMount(){
-         this.shouldNavigateAway();
-        try{
-            const id= this.props.match.params.id;
-            const {data}= await axiosConfig.get(`/api/ideas/${id}`);
-            this.setState({
-                idea:data
-            });
-
-            const response= await axiosConfig.get('api/user',{
-                headers:{
-                    authorization: `Bearer ${this.props.auth.token}`
-                }
-            });
-
-            if(! response.data.message){
-                this.setState({
-                    bookmarkedIdeas: response.data.bookmarks
-                })
-            }
-
-        }catch(e){
-            this.setState({
-                networkError:true
-            })
-        }
-    }
-
-    shouldNavigateAway(){
-        if(! this.props.auth){
-             this.props.history.push('/login');
-        }
+    componentDidMount(){
+            this.loadIdea();
+            this.loadBookmarkIdeas();
     }
 
     relativeTime(date_str) {
@@ -83,18 +54,36 @@ class Idea extends Component{
         return r;
     };
     
-    deleteIdea= async (e,id)=>{
-        e.preventDefault();
+    loadIdea = async ()=>{
+        try{
+            const id= this.props.match.params.id;
+            const {data}= await axiosConfig.get(`/api/ideas/${id}`);
+            this.setState({
+                idea:data
+            });
+
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+
+    }
+
+    loadBookmarkIdeas =async()=>{
+        if(this.props.auth){
         try{
 
-            const {data}= await axiosConfig.delete(`/api/ideas/${id}`,{
+            const response= await axiosConfig.get('api/user',{
                 headers:{
                     authorization: `Bearer ${this.props.auth.token}`
                 }
             });
 
-            if(data.deleted == true){
-                this.props.history.push("/");
+            if(! response.data.message){
+                this.setState({
+                    bookmarkedIdeas: response.data.bookmarks
+                })
             }
 
         }catch(e){
@@ -102,6 +91,37 @@ class Idea extends Component{
                 networkError:true
             })
         }
+      }else{
+          this.setState({
+              bookmarkedIdeas:[]
+          })
+      }
+
+    }
+
+    deleteIdea= async (e,id)=>{
+        e.preventDefault();
+        if(this.props.auth){
+            try{
+
+                const {data}= await axiosConfig.delete(`/api/ideas/${id}`,{
+                    headers:{
+                        authorization: `Bearer ${this.props.auth.token}`
+                    }
+                });
+
+                if(data.deleted == true){
+                    this.props.history.push("/");
+                }
+
+            }catch(e){
+                this.setState({
+                    networkError:true
+                })
+            }
+         }else{
+             this.props.history.push('/login');
+         }
          
     }
 
@@ -121,6 +141,7 @@ class Idea extends Component{
 
     bookmark = async (e,id) =>{
         e.preventDefault();
+        if(this.props.auth){
             try{
             const {data}= await axiosConfig.post(`/api/ideas/${id}/bookmark`,{},{
                 headers:{
@@ -129,34 +150,22 @@ class Idea extends Component{
             });
 
             if(! data.message){
-                const {data}= await axiosConfig.get(`/api/ideas/${id}`);
-                this.setState({
-                    idea:data
-                });
-
-                const response= await axiosConfig.get('api/user',{
-                    headers:{
-                        authorization: `Bearer ${this.props.auth.token}`
-                    }
-                });
-
-                if(! response.data.message){
-                    this.setState({
-                        bookmarkedIdeas: response.data.bookmarks
-                    })
-                }
-
-
+                this.loadIdea();
+                this.loadBookmarkIdeas();
            }
         }catch(e){
             this.setState({
                 networkError:true
             })
         }
+      }else{
+          this.props.history.push('/login');
+      }
     }
 
     unbookmark = async (e,id)=>{
         e.preventDefault();
+     if(this.props.auth){
         try{
             const {data}= await axiosConfig.delete(`/api/ideas/${id}/unbookmark`,{
                 headers:{
@@ -165,30 +174,17 @@ class Idea extends Component{
             });
 
             if(! data.message){
-                const {data}= await axiosConfig.get(`/api/ideas/${id}`);
-                this.setState({
-                    idea:data
-                });
-
-                const response= await axiosConfig.get('api/user',{
-                    headers:{
-                        authorization: `Bearer ${this.props.auth.token}`
-                    }
-                });
-
-                if(! response.data.message){
-                    this.setState({
-                        bookmarkedIdeas: response.data.bookmarks
-                    })
-                }
-
-
+                this.loadIdea();
+                this.loadBookmarkIdeas();
            }
         }catch(e){
             this.setState({
                 networkError:true
             })
         }
+      }else{
+          this.props.history.push('/login');
+      }
     }
   
 
@@ -230,6 +226,55 @@ class Idea extends Component{
         }
     }
 
+    upvotes = async(e,ideaId)=>{
+        e.preventDefault();
+     if(this.props.auth){
+        try{
+            const {data}= await axiosConfig.post(`/api/ideas/${ideaId}/upvotes`,{},{
+                headers:{
+                    authorization: `Bearer ${this.props.auth.token}`
+                }
+            });
+
+            if(! data.message){
+                this.loadIdea();
+           }
+
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+      }else{
+          this.props.history.push('/login');
+      }
+
+    }
+
+    downvotes=async (e,ideaId)=>{
+        e.preventDefault();
+    if(this.props.auth){
+        try{
+            const {data}= await axiosConfig.post(`/api/ideas/${ideaId}/downvotes`,{},{
+                headers:{
+                    authorization: `Bearer ${this.props.auth.token}`
+                }
+            });
+            if(! data.message){
+                this.loadIdea();
+           }
+
+        }catch(e){
+            this.setState({
+                networkError:true
+            })
+        }
+      }else{
+          this.props.history.push('/login');
+      }
+    }
+
+
     displayIdeas(){
         const {idea}=this.state;
         if(idea){
@@ -238,12 +283,12 @@ class Idea extends Component{
                 <div className="card-left-content">
                     <div className="upvote">
                      <p className="text-center"><b>{idea.upvotes}</b></p>
-                    <span className="icon is-large button">
+                    <span className="icon is-large button" onClick={e => this.upvotes(e,idea.id)}>
                            <i className="fas fa-caret-up"></i>
                     </span>
                     </div>
                     <div className="downvote">
-                    <span className="icon is-large button">
+                    <span className="icon is-large button" onClick={e => this.downvotes(e,idea.id)}>
                            <i className="fas fa-caret-down"></i>
                     </span> 
                     <p className="text-center"><b>{idea.downvotes}</b></p>

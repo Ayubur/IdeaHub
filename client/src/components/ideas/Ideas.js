@@ -23,16 +23,13 @@ class Ideas extends Component{
     }
 
      async componentDidMount(){
-        try{
+         this.loadIdeas();
+         this.loadBookmarkedIdeas();
+    }
 
-            const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
-            this.setState({
-                ideas:data,
-                has_more: data[data.length-1].has_more,
-                has_previous: data[data.length-1].has_previous
-            });
-
+    loadBookmarkedIdeas = async ()=>{
             if(this.props.auth){
+              try{
                 const response= await axiosConfig.get('api/user',{
                     headers:{
                         authorization: `Bearer ${this.props.auth.token}`
@@ -45,12 +42,31 @@ class Ideas extends Component{
                     })
                 }
            }
+        catch(e){
+            this.setState({
+                networkError:true
+            })
+         }
+       }
+    }
+
+    loadIdeas = async ()=>{
+        const {page}=this.state;
+        try{
+
+            const {data}= await axiosConfig.get(`/api/ideas?page=${page}`);
+            this.setState({
+                ideas:data,
+                has_more:data[data.length-1].has_more,
+                has_previous: data[data.length-1].has_previous
+            });
 
         }catch(e){
             this.setState({
                 networkError:true
             })
         }
+
     }
 
     relativeTime(date_str) {
@@ -83,51 +99,17 @@ class Ideas extends Component{
         return  r;
     };
 
-    nextIdeas = async()=>{
-        let {page}= this.state;
+    nextIdeas = ()=>{
 
-        page= page+1;
-
-        try{
-
-            const {data}= await axiosConfig.get(`/api/ideas?page=${page}`);
-            this.setState({
-                ideas:data,
-                has_more: data[data.length-1].has_more,
-                has_previous:data[data.length-1].has_previous,
-                page:page
-            });
-
-        }catch(e){
-            this.setState({
-                networkError:true
-            })
-        }
-
-
+        this.setState(prevstate =>{
+                prevstate.page= prevstate.page+1
+        },this.loadIdeas);
     }
 
-    previousIdeas= async()=>{
-        let {page}= this.state;
-
-        page= page-1;
-
-        try{
-
-            const {data}= await axiosConfig.get(`/api/ideas?page=${page}`);
-            this.setState({
-                ideas:data,
-                has_more:data[data.length-1].has_more,
-                has_previous: data[data.length-1].has_previous,
-                page:page
-            });
-
-        }catch(e){
-            this.setState({
-                networkError:true
-            })
-        }
-
+    previousIdeas= ()=>{
+        this.setState(prevstate =>{
+            prevstate.page= prevstate.page-1
+         },this.loadIdeas);
     }
 
     deleteIdea= async (e,id)=>{
@@ -140,13 +122,7 @@ class Ideas extends Component{
             });
 
             if(data.deleted == true){
-
-                const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
-                this.setState({
-                    ideas:data,
-                    has_more: data[data.length-1].has_more,
-                    has_previous: data[data.length-1].has_previous
-                });
+                this.loadIdeas();
            }
 
         }catch(e){
@@ -199,26 +175,8 @@ class Ideas extends Component{
             });
 
             if(! data.message){
-                const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
-                this.setState({
-                    ideas:data,
-                    has_more: data[data.length-1].has_more,
-                    has_previous: data[data.length-1].has_previous
-                });
-
-                const response= await axiosConfig.get('api/user',{
-                    headers:{
-                        authorization: `Bearer ${this.props.auth.token}`
-                    }
-                });
-
-                if(! response.data.message){
-                    this.setState({
-                        bookmarkedIdeas: response.data.bookmarks
-                    })
-                }
-
-
+                this.loadIdeas();
+                this.loadBookmarkedIdeas();
            }
         }catch(e){
             this.setState({
@@ -241,26 +199,8 @@ class Ideas extends Component{
                 });
     
                 if(! data.message){
-                    const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
-                    this.setState({
-                        ideas:data,
-                        has_more: data[data.length-1].has_more,
-                        has_previous: data[data.length-1].has_previous
-                    });
-    
-                    const response= await axiosConfig.get('api/user',{
-                        headers:{
-                            authorization: `Bearer ${this.props.auth.token}`
-                        }
-                    });
-    
-                    if(! response.data.message){
-                        this.setState({
-                            bookmarkedIdeas: response.data.bookmarks
-                        })
-                    }
-    
-    
+                    this.loadIdeas();
+                    this.loadBookmarkedIdeas();
                }
             }catch(e){
                 this.setState({
@@ -334,12 +274,7 @@ class Ideas extends Component{
             });
 
             if(! data.message){
-                const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
-                this.setState({
-                    ideas:data,
-                    has_more: data[data.length-1].has_more,
-                    has_previous: data[data.length-1].has_previous
-                });
+                this.loadIdeas();
            }
 
         }catch(e){
@@ -363,12 +298,7 @@ class Ideas extends Component{
                 }
             });
             if(! data.message){
-                const {data}= await axiosConfig.get(`/api/ideas?page=${this.state.page}`);
-                this.setState({
-                    ideas:data,
-                    has_more: data[data.length-1].has_more,
-                    has_previous: data[data.length-1].has_previous
-                });
+                this.loadIdeas();
            }
 
         }catch(e){
